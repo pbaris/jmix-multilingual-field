@@ -2,7 +2,7 @@ package com.pbaris.jmix.mlf.component;
 
 import java.util.List;
 
-import com.pbaris.jmix.mlf.LocaleProvider;
+import com.pbaris.jmix.mlf.LocalesProvider;
 import com.pbaris.jmix.mlf.data.MultilingualString;
 import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.HasAriaLabel;
@@ -75,7 +75,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     @Override
     public void afterPropertiesSet() throws Exception {
         this.fieldDelegate = applicationContext.getBean(MultilingualFieldDelegate.class, this);
-        this.locales = applicationContext.getBean(LocaleProvider.class).getAvailableLocales(Mode.SYSTEM); //TODO Parametrize
+        this.locales = applicationContext.getBean(LocalesProvider.class).getAvailableLocales(Mode.SYSTEM); //TODO Parametrize
         this.uiComponents = applicationContext.getBean(UiComponents.class);
     }
 
@@ -119,7 +119,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         localeField.setRenderer(new ComponentRenderer<>(locale -> {
             HorizontalLayout wrapper = new HorizontalLayout();
             wrapper.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-            wrapper.add(new SvgIcon("icons/flags/%s.svg".formatted(locale)), new Span(locale));
+            wrapper.add(new SvgIcon("icons/%s.svg".formatted(locale)), new Span(locale));
             return wrapper;
         }));
 

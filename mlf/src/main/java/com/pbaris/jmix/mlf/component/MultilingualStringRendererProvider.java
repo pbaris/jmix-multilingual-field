@@ -1,6 +1,6 @@
 package com.pbaris.jmix.mlf.component;
 
-import com.pbaris.jmix.mlf.LocaleProvider;
+import com.pbaris.jmix.mlf.LocalesProvider;
 import io.jmix.core.entity.EntityValues;
 import io.jmix.core.metamodel.model.MetaPropertyPath;
 import io.jmix.flowui.xml.layout.ComponentLoader;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class MultilingualStringRendererProvider implements RendererProvider<MultilingualStringRenderer<?>> {
     public static final String NAME = "multilingualStringRenderer";
 
-    private LocaleProvider localeProvider;
+    private LocalesProvider localesProvider;
 
     @Override
     public boolean supports(final String rendererName) {
@@ -28,11 +28,11 @@ public class MultilingualStringRendererProvider implements RendererProvider<Mult
                                                         final MetaPropertyPath metaPropertyPath, final ComponentLoader.Context context) {
 
         return new MultilingualStringRenderer<>(item -> EntityValues.getValueEx(item, metaPropertyPath),
-            localeProvider.getDefaultLocale(MultilingualField.Mode.SYSTEM)); //TODO Parametrize
+            localesProvider.getDefaultLocale(MultilingualField.Mode.SYSTEM)); //TODO Parametrize
     }
 
     @Autowired(required = false)
-    public void setLocaleProvider(final LocaleProvider localeProvider) {
-        this.localeProvider = localeProvider;
+    public void setLocaleProvider(final LocalesProvider localesProvider) {
+        this.localesProvider = localesProvider;
     }
 }

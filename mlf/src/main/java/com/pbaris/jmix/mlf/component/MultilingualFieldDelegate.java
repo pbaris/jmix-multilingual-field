@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author Panos Bariamis (pbaris)
  */
-@Component("mlf_MultilingualStringFieldDelegate")
+@Component("mlf_MultilingualFieldDelegate")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MultilingualFieldDelegate extends AbstractFieldDelegate<MultilingualField, MultilingualString, MultilingualString> {
 

@@ -1,19 +1,18 @@
 package com.pbaris.jmix.mlf;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import com.pbaris.jmix.mlf.component.MultilingualField;
 import io.jmix.core.CoreProperties;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
-@Component("mlf_LocaleProvider")
-public class LocaleProvider {
+@Component("mlf_LocalesProvider")
+public class LocalesProvider {
 
-    private final CoreProperties coreProperties;
+    private CoreProperties coreProperties;
+    private UserLocalesProvider userLocalesProvider;
 
     public List<String> getAvailableLocales(final MultilingualField.Mode mode) {
         return switch (mode) {
@@ -27,12 +26,23 @@ public class LocaleProvider {
     }
 
     private List<String> getSystemLocales() {
+        coreProperties.get
         return coreProperties.getAvailableLocales().stream()
             .map(Locale::getLanguage)
             .toList();
     }
 
     private List<String> getUserLocales() {
-        return Collections.emptyList();
+        return userLocalesProvider != null ? userLocalesProvider.getUserLocales() : getSystemLocales();
+    }
+
+    @Autowired
+    public void setCoreProperties(final CoreProperties coreProperties) {
+        this.coreProperties = coreProperties;
+    }
+
+    @Autowired(required = false)
+    public void setUserLocalesProvider(final UserLocalesProvider userLocalesProvider) {
+        this.userLocalesProvider = userLocalesProvider;
     }
 }
