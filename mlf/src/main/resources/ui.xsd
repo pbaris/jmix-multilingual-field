@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns="http://schemas.netmechanics.gr/jmix/ui"
+		   attributeFormDefault="unqualified"
+		   elementFormDefault="qualified"
+		   targetNamespace="http://schemas.netmechanics.gr/jmix/ui"
+		   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   xmlns:layout="http://jmix.io/schema/flowui/layout">
+
+	<xs:redefine schemaLocation="http://jmix.io/schema/flowui/layout">
+		<xs:group name="renderers">
+			<xs:sequence>
+				<xs:choice>
+					<xs:group ref="renderers"/>
+					<xs:element name="multilingualStringRenderer" minOccurs="0" type="multilingualStringRendererType"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:group>
+	</xs:redefine>
+
+	<xs:complexType name="multilingualStringRendererType" />
+
+	<xs:simpleType name="multilingualFieldMode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SINGLE"/>
+			<xs:enumeration value="MULTI"/>
+			<xs:enumeration value="RTF"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:element name="multilingualField">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="layout:baseComponent">
+					<xs:attributeGroup ref="layout:hasDataContainer"/>
+					<xs:attributeGroup ref="layout:hasLabel"/>
+					<xs:attributeGroup ref="layout:hasEnabled"/>
+					<xs:attributeGroup ref="layout:hasClassNames"/>
+					<xs:attributeGroup ref="layout:hasSize"/>
+					<xs:attributeGroup ref="layout:hasHelperText"/>
+					<xs:attributeGroup ref="layout:hasValueAndElement"/>
+					<xs:attributeGroup ref="layout:hasAriaLabel"/>
+
+					<xs:attribute name="mode" type="multilingualFieldMode"/>
+					<xs:attribute name="multilineHeight" type="componentSize"/>
+					<xs:attribute name="multilineMinHeight" type="componentSize"/>
+					<xs:attribute name="multilineMaxHeight" type="componentSize"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+</xs:schema>
