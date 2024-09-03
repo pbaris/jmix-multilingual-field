@@ -1,6 +1,7 @@
 package com.pbaris.jmix.mlf.component;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.pbaris.jmix.mlf.data.MultilingualString;
 import com.pbaris.jmix.mlf.locales.LocalesProvider;
@@ -13,8 +14,8 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.SvgIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -25,6 +26,7 @@ import io.jmix.flowui.component.richtexteditor.RichTextEditor;
 import io.jmix.flowui.data.SupportsValueSource;
 import io.jmix.flowui.data.ValueSource;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -36,7 +38,7 @@ import org.springframework.lang.Nullable;
  * @author Panos Bariamis (pbaris)
  */
 //TODO add required
-@StyleSheet("mlf.css")
+@StyleSheet("com/pbaris/jmix/mlf/mlf.css")
 public class MultilingualField extends CustomField<MultilingualString> implements SupportsValueSource<MultilingualString>,
     ApplicationContextAware, InitializingBean, HasAriaLabel {
 
@@ -65,7 +67,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     @Setter
     private String multilineMaxHeight;
 
-    private boolean isUpdateLocale;
+    private final AtomicBoolean isUpdateLocale = new AtomicBoolean(false);
 
     @Override
     public void setApplicationContext(@NonNull final ApplicationContext applicationContext) throws BeansException {
@@ -90,30 +92,29 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         initContentField();
         initLocaleSelect();
 
-        if (fieldType == Type.SINGLE) {
-            HorizontalLayout hl = uiComponents.create(HorizontalLayout.class);
-            hl.setSpacing(false);
-            hl.setAlignItems(Alignment.CENTER);
-            hl.addAndExpand(contentField);
-            hl.add(localeField);
+        FlexLayout layout = new FlexLayout();
+        add(layout);
 
-            add(hl);
+        if (fieldType == Type.SINGLE) {
+            layout.setFlexDirection(FlexLayout.FlexDirection.ROW);
+            layout.setFlexWrap(FlexLayout.FlexWrap.NOWRAP);
+            layout.setAlignItems(Alignment.CENTER);
+            layout.add(contentField);
+            layout.add(localeField);
 
         } else {
-            VerticalLayout vl = uiComponents.create(VerticalLayout.class);
-            vl.setSpacing(false);
-            vl.setPadding(false);
-            vl.add(localeField);
-            vl.addAndExpand(contentField);
-            localeField.getStyle().setAlignSelf(Style.AlignSelf.END);
+            layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
+            layout.add(localeField);
+            layout.add(contentField);
 
-            add(vl);
+            localeField.getStyle().setAlignSelf(Style.AlignSelf.END);
         }
     }
 
     private void initLocaleSelect() {
         localeField = new Select<>();
-        localeField.setWidth("100px");
+        localeField.setWidth("8em");
+        localeField.getStyle().setFlexGrow("0").setFlexShrink("1");
         localeField.setItems(locales);
 
         localeField.setRenderer(new ComponentRenderer<>(locale -> {
@@ -124,8 +125,9 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         }));
 
         localeField.addValueChangeListener(e -> {
-            isUpdateLocale = true;
-            contentField.setValue(mlstr.getContent(e.getValue()));
+            String localizedValue = mlstr.getContent(e.getValue());
+            isUpdateLocale.set(StringUtils.isNotBlank(localizedValue));
+            contentField.setValue(localizedValue);
         });
     }
 
@@ -144,16 +146,16 @@ public class MultilingualField extends CustomField<MultilingualString> implement
             contentField = uiComponents.create(TextField.class);
         }
 
+        contentField.getStyle().setFlexGrow("1");
+
         if (contentField instanceof HasSize hasSize) {
             hasSize.setWidth("100%");
         }
 
         contentField.addValueChangeListener(e -> {
-            if (!isUpdateLocale) {
+            if (!isUpdateLocale.getAndSet(false)) {
                 mlstr.addContent(localeField.getValue(), e.getValue());
             }
-
-            isUpdateLocale = false;
         });
     }
 

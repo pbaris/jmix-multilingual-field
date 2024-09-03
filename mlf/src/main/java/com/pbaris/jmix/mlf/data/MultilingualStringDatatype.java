@@ -12,7 +12,7 @@ import org.springframework.lang.NonNull;
  * @author Panos Bariamis (pbaris)
  */
 @DatatypeDef(id = "multilingualString", javaClass = MultilingualString.class, defaultForClass = true)
-@Ddl("clob")
+@Ddl("clob") //TODO default type ???
 @Ddl(dbms = "postgres", value = "jsonb")
 public class MultilingualStringDatatype implements Datatype<MultilingualString> {
 
