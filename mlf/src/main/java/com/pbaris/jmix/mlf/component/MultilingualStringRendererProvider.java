@@ -1,6 +1,6 @@
 package com.pbaris.jmix.mlf.component;
 
-import com.pbaris.jmix.mlf.LocalesProvider;
+import com.pbaris.jmix.mlf.locales.LocalesProvider;
 import io.jmix.core.entity.EntityValues;
 import io.jmix.core.metamodel.model.MetaPropertyPath;
 import io.jmix.flowui.xml.layout.ComponentLoader;

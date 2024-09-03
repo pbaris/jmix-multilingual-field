@@ -2,8 +2,8 @@ package com.pbaris.jmix.mlf.component;
 
 import java.util.List;
 
-import com.pbaris.jmix.mlf.LocalesProvider;
 import com.pbaris.jmix.mlf.data.MultilingualString;
+import com.pbaris.jmix.mlf.locales.LocalesProvider;
 import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.HasAriaLabel;
 import com.vaadin.flow.component.HasSize;
