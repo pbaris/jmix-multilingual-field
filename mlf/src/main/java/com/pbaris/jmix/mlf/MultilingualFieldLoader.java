@@ -1,6 +1,7 @@
 package com.pbaris.jmix.mlf;
 
 import com.pbaris.jmix.mlf.component.MultilingualField;
+import com.pbaris.jmix.mlf.locales.LocaleMode;
 import io.jmix.flowui.xml.layout.loader.AbstractComponentLoader;
 import io.jmix.flowui.xml.layout.support.DataLoaderSupport;
 import org.dom4j.Element;
@@ -26,17 +27,27 @@ public class MultilingualFieldLoader extends AbstractComponentLoader<Multilingua
         componentLoader().loadClassNames(resultComponent, element);
         componentLoader().loadAriaLabel(resultComponent, element);
         componentLoader().loadHelperText(resultComponent, element);
+
         loadMultilineHeight(resultComponent, element);
         loadMultilineMaxHeight(resultComponent, element);
         loadMultilineMinHeight(resultComponent, element);
 
-        loadMode(resultComponent, element);
+        loadLocaleMode(resultComponent, element);
+        loadFieldType(resultComponent, element);
+
         getDataLoaderSupport().loadData(resultComponent, element);
         componentLoader().loadEnabled(resultComponent, element);
         componentLoader().loadValueAndElementAttributes(resultComponent, element);
     }
 
-    private void loadMode(final MultilingualField component, final Element element) {
+    private void loadLocaleMode(final MultilingualField component, final Element element) {
+        LocaleMode localeMode = loaderSupport.loadString(element, "localeMode")
+            .map(LocaleMode::valueOf)
+            .orElse(LocaleMode.SYSTEM);
+        component.setLocaleMode(localeMode);
+    }
+
+    private void loadFieldType(final MultilingualField component, final Element element) {
         MultilingualField.Type fieldType = loaderSupport.loadString(element, "fieldType")
             .map(MultilingualField.Type::valueOf)
             .orElse(MultilingualField.Type.SINGLE);

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -39,12 +38,10 @@ public class MultilingualString implements Serializable {
         return contents;
     }
 
-    @JsonIgnore
     public String getContent(final String locale) {
         return getContent(locale, "");
     }
 
-    @JsonIgnore
     public String getContent(final String locale, final String defaultValue) {
         return contents.getOrDefault(locale, defaultValue);
     }

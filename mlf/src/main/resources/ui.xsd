@@ -20,11 +20,18 @@
 
 	<xs:complexType name="multilingualStringRendererType" />
 
-	<xs:simpleType name="multilingualFieldMode">
+	<xs:simpleType name="multilingualFieldType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="SINGLE"/>
 			<xs:enumeration value="MULTI"/>
 			<xs:enumeration value="RTF"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="localeMode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SYSTEM"/>
+			<xs:enumeration value="USER"/>
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -41,7 +48,8 @@
 					<xs:attributeGroup ref="layout:hasValueAndElement"/>
 					<xs:attributeGroup ref="layout:hasAriaLabel"/>
 
-					<xs:attribute name="mode" type="multilingualFieldMode"/>
+					<xs:attribute name="fieldType" type="multilingualFieldType"/>
+					<xs:attribute name="localeMode" type="localeMode"/>
 					<xs:attribute name="multilineHeight" type="componentSize"/>
 					<xs:attribute name="multilineMinHeight" type="componentSize"/>
 					<xs:attribute name="multilineMaxHeight" type="componentSize"/>

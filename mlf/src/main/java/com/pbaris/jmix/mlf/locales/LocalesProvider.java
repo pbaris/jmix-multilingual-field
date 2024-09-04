@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import com.pbaris.jmix.mlf.component.MultilingualField;
 import io.jmix.appsettings.AppSettings;
 import io.jmix.core.CoreProperties;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +20,14 @@ public class LocalesProvider {
     private final CoreProperties coreProperties;
     private final UserLocalesProperties localesProperties;
 
-    public List<String> getAvailableLocales(final MultilingualField.Mode mode) {
+    public List<String> getAvailableLocales(final LocaleMode mode) {
         return switch (mode) {
             case SYSTEM -> getSystemLocales();
             case USER -> getUserLocales();
         };
     }
 
-    public String getDefaultLocale(final MultilingualField.Mode mode) {
+    public String getDefaultLocale(final LocaleMode mode) {
         return getAvailableLocales(mode).get(0);
     }
 

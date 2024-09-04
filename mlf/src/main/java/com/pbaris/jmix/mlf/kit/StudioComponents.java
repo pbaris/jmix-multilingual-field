@@ -48,7 +48,10 @@ public interface StudioComponents {
                 classFqn = "com.pbaris.jmix.mlf.component.MultilingualField$Type",
                 defaultValue = "SINGLE",
                 options = {"SINGLE", "MULTI", "RTF"}),
-
+            @StudioProperty(xmlAttribute = "localeMode", type = StudioPropertyType.ENUMERATION,
+                classFqn = "com.pbaris.jmix.mlf.locales.LocaleMode",
+                defaultValue = "SYSTEM",
+                options = {"SYSTEM", "USER"}),
             @StudioProperty(xmlAttribute = "multilineHeight", type = StudioPropertyType.SIZE, options = {"AUTO", "100%"}),
             @StudioProperty(xmlAttribute = "multilineMinHeight", type = StudioPropertyType.SIZE, options = {"AUTO", "100%"}),
             @StudioProperty(xmlAttribute = "multilineMaxHeight", type = StudioPropertyType.SIZE, options = {"AUTO", "100%"}),

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.pbaris.jmix.mlf.data.MultilingualString;
+import com.pbaris.jmix.mlf.locales.LocaleMode;
 import com.pbaris.jmix.mlf.locales.LocalesProvider;
 import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.HasAriaLabel;
@@ -37,14 +38,11 @@ import org.springframework.lang.Nullable;
 /**
  * @author Panos Bariamis (pbaris)
  */
-//TODO add required
 @StyleSheet("com/pbaris/jmix/mlf/mlf.css")
 public class MultilingualField extends CustomField<MultilingualString> implements SupportsValueSource<MultilingualString>,
     ApplicationContextAware, InitializingBean, HasAriaLabel {
 
     public enum Type { SINGLE, MULTI, RTF }
-
-    public enum Mode { SYSTEM, USER }
 
     private ApplicationContext applicationContext;
     private UiComponents uiComponents;
@@ -77,8 +75,11 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     @Override
     public void afterPropertiesSet() throws Exception {
         this.fieldDelegate = applicationContext.getBean(MultilingualFieldDelegate.class, this);
-        this.locales = applicationContext.getBean(LocalesProvider.class).getAvailableLocales(Mode.SYSTEM); //TODO Parametrize
         this.uiComponents = applicationContext.getBean(UiComponents.class);
+    }
+
+    public void setLocaleMode(final LocaleMode localeMode) {
+        this.locales = applicationContext.getBean(LocalesProvider.class).getAvailableLocales(localeMode);
     }
 
     public void setFieldType(final Type fieldType) {
@@ -98,7 +99,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         if (fieldType == Type.SINGLE) {
             layout.setFlexDirection(FlexLayout.FlexDirection.ROW);
             layout.setFlexWrap(FlexLayout.FlexWrap.NOWRAP);
-            layout.setAlignItems(Alignment.CENTER);
+            layout.setAlignItems(Alignment.BASELINE);
             layout.add(contentField);
             layout.add(localeField);
 
@@ -191,6 +192,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
 
     @Override
     public void setReadOnly(final boolean readOnly) {
+        super.setReadOnly(readOnly);
         localeField.setReadOnly(readOnly);
         contentField.setReadOnly(readOnly);
     }

@@ -1,5 +1,6 @@
 package com.pbaris.jmix.mlf.component;
 
+import com.pbaris.jmix.mlf.locales.LocaleMode;
 import com.pbaris.jmix.mlf.locales.LocalesProvider;
 import io.jmix.core.entity.EntityValues;
 import io.jmix.core.metamodel.model.MetaPropertyPath;
@@ -28,7 +29,7 @@ public class MultilingualStringRendererProvider implements RendererProvider<Mult
                                                         final MetaPropertyPath metaPropertyPath, final ComponentLoader.Context context) {
 
         return new MultilingualStringRenderer<>(item -> EntityValues.getValueEx(item, metaPropertyPath),
-            localesProvider.getDefaultLocale(MultilingualField.Mode.SYSTEM)); //TODO Parametrize
+            localesProvider.getDefaultLocale(LocaleMode.SYSTEM)); //TODO Parametrize
     }
 
     @Autowired(required = false)
