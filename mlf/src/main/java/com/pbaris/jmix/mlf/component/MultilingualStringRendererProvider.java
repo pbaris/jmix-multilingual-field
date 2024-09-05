@@ -6,18 +6,21 @@ import io.jmix.core.entity.EntityValues;
 import io.jmix.core.metamodel.model.MetaPropertyPath;
 import io.jmix.flowui.xml.layout.ComponentLoader;
 import io.jmix.flowui.xml.layout.loader.component.datagrid.RendererProvider;
+import io.jmix.flowui.xml.layout.support.LoaderSupport;
+import lombok.RequiredArgsConstructor;
 import org.dom4j.Element;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * @author Panos Bariamis (pbaris)
  */
+@RequiredArgsConstructor
 @Component("mlf_MultilingualStringRendererProvider")
 public class MultilingualStringRendererProvider implements RendererProvider<MultilingualStringRenderer<?>> {
     public static final String NAME = "multilingualStringRenderer";
 
-    private LocalesProvider localesProvider;
+    private final LoaderSupport loaderSupport;
+    private final LocalesProvider localesProvider;
 
     @Override
     public boolean supports(final String rendererName) {
@@ -28,12 +31,12 @@ public class MultilingualStringRendererProvider implements RendererProvider<Mult
     public MultilingualStringRenderer<?> createRenderer(final Element element, 
                                                         final MetaPropertyPath metaPropertyPath, final ComponentLoader.Context context) {
 
-        return new MultilingualStringRenderer<>(item -> EntityValues.getValueEx(item, metaPropertyPath),
-            localesProvider.getDefaultLocale(LocaleMode.SYSTEM)); //TODO Parametrize
-    }
+        LocaleMode localeMode = loaderSupport
+            .loadResourceString(element, "localeMode", context.getMessageGroup())
+            .map(LocaleMode::valueOf)
+            .orElse(LocaleMode.SYSTEM);
 
-    @Autowired(required = false)
-    public void setLocaleProvider(final LocalesProvider localesProvider) {
-        this.localesProvider = localesProvider;
+        return new MultilingualStringRenderer<>(item -> EntityValues.getValueEx(item, metaPropertyPath),
+            localesProvider.getDefaultLocale(localeMode));
     }
 }
