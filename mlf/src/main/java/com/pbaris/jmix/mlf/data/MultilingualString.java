@@ -11,12 +11,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.Nullable;
 
 /**
  * @author Panos Bariamis (pbaris)
  */
 @EqualsAndHashCode(of = "id")
-public class MultilingualString implements Serializable {
+public class MultilingualString implements Serializable, Comparable<MultilingualString> {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Getter
@@ -54,6 +55,32 @@ public class MultilingualString implements Serializable {
     @Override
     public String toString() {
         return toJson(this);
+    }
+
+    @Override
+    public int compareTo(@Nullable final MultilingualString o) {
+        String defaultLocale = "en"; //LocaleUtils.getDefaultLocale(); //TODO somehow
+
+        String s1 = getContent(defaultLocale, null);
+
+        if (o == null && s1 == null) {
+            return 0;
+        }
+
+        if (o == null) {
+            return 1;
+        }
+
+        String s2 = o.getContent(defaultLocale, null);
+        if (s2 == null) {
+            return 1;
+        }
+
+        if (s1 == null) {
+            return -1;
+        }
+
+        return s1.compareTo(s2);
     }
 
     public static String toJson(final MultilingualString mlstr) {
