@@ -2,6 +2,7 @@ package com.pbaris.jmix.mlf.kit;
 
 import com.pbaris.jmix.mlf.component.MultilingualField;
 import io.jmix.flowui.kit.meta.StudioComponent;
+import io.jmix.flowui.kit.meta.StudioElement;
 import io.jmix.flowui.kit.meta.StudioPropertiesBinding;
 import io.jmix.flowui.kit.meta.StudioProperty;
 import io.jmix.flowui.kit.meta.StudioPropertyType;
@@ -62,4 +63,15 @@ public interface StudioComponents {
         }
     )
     MultilingualField multilingualField();
+
+    @StudioElement(
+        name = "MultilingualStringRenderer",
+        classFqn = "com.pbaris.jmix.mlf.component.MultilingualStringRenderer",
+        xmlElement = "multilingualStringRenderer",
+        target = {"com.vaadin.flow.component.grid.Grid.Column"},
+        unsupportedTarget = {"io.jmix.flowui.kit.component.grid.EditorActionsColumn"},
+        xmlns = "http://schemas.pbaris.com/jmix/ui",
+        xmlnsAlias = "pb"
+    )
+    void multilingualStringRenderer();
 }
