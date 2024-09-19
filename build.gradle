@@ -8,7 +8,7 @@ buildscript {
 }
 
 group = 'com.pbaris.jmix'
-version = '0.0.40-SNAPSHOT'
+version = '0.0.41-SNAPSHOT'
 
 subprojects {
     apply plugin: 'java-library'
