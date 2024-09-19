@@ -2,6 +2,7 @@ package com.pbaris.jmix.mlf.kit;
 
 import com.pbaris.jmix.mlf.component.MultilingualField;
 import io.jmix.flowui.kit.meta.StudioComponent;
+import io.jmix.flowui.kit.meta.StudioPropertiesBinding;
 import io.jmix.flowui.kit.meta.StudioProperty;
 import io.jmix.flowui.kit.meta.StudioPropertyType;
 import io.jmix.flowui.kit.meta.StudioUiKit;
@@ -55,6 +56,9 @@ public interface StudioComponents {
             @StudioProperty(xmlAttribute = "multilineHeight", type = StudioPropertyType.SIZE, options = {"AUTO", "100%"}),
             @StudioProperty(xmlAttribute = "multilineMinHeight", type = StudioPropertyType.SIZE, options = {"AUTO", "100%"}),
             @StudioProperty(xmlAttribute = "multilineMaxHeight", type = StudioPropertyType.SIZE, options = {"AUTO", "100%"}),
+        },
+        propertiesBindings = {
+            @StudioPropertiesBinding(source = "dataContainer", item = "property")
         }
     )
     MultilingualField multilingualField();
