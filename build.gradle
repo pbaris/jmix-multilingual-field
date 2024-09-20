@@ -52,7 +52,6 @@ subprojects {
                     username = "${nexus_username}"
                     password = "${nexus_password}"
                 }
-                allowInsecureProtocol = true
             }
         }
         publications {
