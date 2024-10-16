@@ -2,6 +2,7 @@ package com.pbaris.jmix.mlf;
 
 import com.pbaris.jmix.mlf.component.MultilingualField;
 import com.pbaris.jmix.mlf.locales.LocaleMode;
+import com.pbaris.jmix.mlf.locales.UserLocalesProperties;
 import io.jmix.flowui.xml.layout.loader.AbstractComponentLoader;
 import io.jmix.flowui.xml.layout.support.DataLoaderSupport;
 import org.dom4j.Element;
@@ -12,7 +13,8 @@ import org.springframework.lang.NonNull;
  */
 public class MultilingualFieldLoader extends AbstractComponentLoader<MultilingualField> {
 
-    protected DataLoaderSupport dataLoaderSupport;
+    private DataLoaderSupport dataLoaderSupport;
+    private UserLocalesProperties userLocalesProperties;
 
     @Override
     @NonNull
@@ -43,7 +45,7 @@ public class MultilingualFieldLoader extends AbstractComponentLoader<Multilingua
     private void loadLocaleMode(final MultilingualField component, final Element element) {
         LocaleMode localeMode = loaderSupport.loadString(element, "localeMode")
             .map(LocaleMode::valueOf)
-            .orElse(LocaleMode.SYSTEM);
+            .orElse(getUserLocalesProperties().getDefaultLocaleMode());
         component.setLocaleMode(localeMode);
     }
 
@@ -74,5 +76,12 @@ public class MultilingualFieldLoader extends AbstractComponentLoader<Multilingua
             dataLoaderSupport = applicationContext.getBean(DataLoaderSupport.class, context);
         }
         return dataLoaderSupport;
+    }
+
+    public UserLocalesProperties getUserLocalesProperties() {
+        if (userLocalesProperties == null) {
+            userLocalesProperties = applicationContext.getBean(UserLocalesProperties.class);
+        }
+        return userLocalesProperties;
     }
 }

@@ -2,6 +2,7 @@ package com.pbaris.jmix.mlf.component;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import com.pbaris.jmix.mlf.data.MultilingualString;
 import com.pbaris.jmix.mlf.locales.LocaleMode;
@@ -66,6 +67,10 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private String multilineMaxHeight;
 
     private final AtomicBoolean isUpdateLocale = new AtomicBoolean(false);
+
+    @Setter
+    private Supplier<AbstractSinglePropertyField<?, String>> fieldProvider;
+
 
     @Override
     public void setApplicationContext(@NonNull final ApplicationContext applicationContext) throws BeansException {
@@ -133,7 +138,10 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     }
 
     private void initContentField() {
-        if (fieldType == Type.RTF) {
+        if (fieldProvider != null) {
+            contentField = fieldProvider.get();
+
+        } else if (fieldType == Type.RTF) {
             contentField = uiComponents.create(RichTextEditor.class);
             initMultilineField(contentField);
 

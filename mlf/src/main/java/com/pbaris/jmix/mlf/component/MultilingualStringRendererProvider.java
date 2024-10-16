@@ -2,6 +2,7 @@ package com.pbaris.jmix.mlf.component;
 
 import com.pbaris.jmix.mlf.locales.LocaleMode;
 import com.pbaris.jmix.mlf.locales.LocalesProvider;
+import com.pbaris.jmix.mlf.locales.UserLocalesProperties;
 import io.jmix.core.entity.EntityValues;
 import io.jmix.core.metamodel.model.MetaPropertyPath;
 import io.jmix.flowui.xml.layout.ComponentLoader;
@@ -21,6 +22,7 @@ public class MultilingualStringRendererProvider implements RendererProvider<Mult
 
     private final LoaderSupport loaderSupport;
     private final LocalesProvider localesProvider;
+    private final UserLocalesProperties userLocalesProperties;
 
     @Override
     public boolean supports(final String rendererName) {
@@ -34,7 +36,7 @@ public class MultilingualStringRendererProvider implements RendererProvider<Mult
         LocaleMode localeMode = loaderSupport
             .loadResourceString(element, "localeMode", context.getMessageGroup())
             .map(LocaleMode::valueOf)
-            .orElse(LocaleMode.SYSTEM);
+            .orElse(userLocalesProperties.getDefaultLocaleMode());
 
         return new MultilingualStringRenderer<>(item -> EntityValues.getValueEx(item, metaPropertyPath),
             localesProvider.getDefaultLocale(localeMode));
