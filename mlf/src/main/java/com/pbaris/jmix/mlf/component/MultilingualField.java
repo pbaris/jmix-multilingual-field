@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import com.pbaris.jmix.mlf.data.MultilingualString;
 import com.pbaris.jmix.mlf.locales.LocaleMode;
 import com.pbaris.jmix.mlf.locales.LocalesProvider;
-import com.vaadin.flow.component.AbstractSinglePropertyField;
+import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.HasAriaLabel;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValueAndElement;
@@ -53,7 +53,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private MultilingualString mlstr;
 
     private Select<String> localeField;
-    private AbstractSinglePropertyField<?, String> contentField;
+    private AbstractField<?, String> contentField;
 
     private Type fieldType = Type.SINGLE;
 
@@ -69,7 +69,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private final AtomicBoolean isUpdateLocale = new AtomicBoolean(false);
 
     @Setter
-    private Supplier<AbstractSinglePropertyField<?, String>> fieldProvider;
+    private Supplier<AbstractField<?, String>> fieldProvider;
 
 
     @Override
