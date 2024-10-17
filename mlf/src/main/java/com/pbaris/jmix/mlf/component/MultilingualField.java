@@ -109,7 +109,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         mainLayout = new FlexLayout();
         add(mainLayout);
 
-        if (fieldType == Type.SINGLE) {
+        if (fieldType == Type.SINGLE && fieldProvider == null) {
             mainLayout.setFlexDirection(FlexLayout.FlexDirection.ROW);
             mainLayout.setFlexWrap(FlexLayout.FlexWrap.NOWRAP);
             mainLayout.setAlignItems(Alignment.BASELINE);
