@@ -95,12 +95,18 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         initComponent();
     }
 
-    private void initComponent() {
+    private void destroyComponent() {
         if (mainLayout != null) {
             remove(mainLayout);
+            removeClassName("ml-field");
+            removeClassName("ml-multi-field");
+            removeClassName("ml-single-field");
             isUpdateLocale.set(false);
         }
+    }
 
+    private void initComponent() {
+        destroyComponent();
         addClassName("ml-field");
 
         initContentField();
