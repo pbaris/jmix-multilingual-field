@@ -48,12 +48,14 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private ApplicationContext applicationContext;
     private UiComponents uiComponents;
     private MultilingualFieldDelegate fieldDelegate;
+    private Supplier<AbstractField<?, String>> fieldProvider;
 
     private List<String> locales;
     private MultilingualString mlstr;
 
     private Select<String> localeField;
     private AbstractField<?, String> contentField;
+    private FlexLayout mainLayout;
 
     private Type fieldType = Type.SINGLE;
 
@@ -67,10 +69,6 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private String multilineMaxHeight;
 
     private final AtomicBoolean isUpdateLocale = new AtomicBoolean(false);
-
-    @Setter
-    private Supplier<AbstractField<?, String>> fieldProvider;
-
 
     @Override
     public void setApplicationContext(@NonNull final ApplicationContext applicationContext) throws BeansException {
@@ -92,27 +90,39 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         initComponent();
     }
 
+    public void setFieldProvider(final Supplier<AbstractField<?, String>> fieldProvider) {
+        this.fieldProvider = fieldProvider;
+        initComponent();
+    }
+
     private void initComponent() {
+        if (mainLayout != null) {
+            remove(mainLayout);
+            isUpdateLocale.set(false);
+        }
+
         addClassName("ml-field");
 
         initContentField();
         initLocaleSelect();
 
-        FlexLayout layout = new FlexLayout();
-        add(layout);
+        mainLayout = new FlexLayout();
+        add(mainLayout);
 
         if (fieldType == Type.SINGLE) {
-            layout.setFlexDirection(FlexLayout.FlexDirection.ROW);
-            layout.setFlexWrap(FlexLayout.FlexWrap.NOWRAP);
-            layout.setAlignItems(Alignment.BASELINE);
-            layout.add(contentField);
-            layout.add(localeField);
+            mainLayout.setFlexDirection(FlexLayout.FlexDirection.ROW);
+            mainLayout.setFlexWrap(FlexLayout.FlexWrap.NOWRAP);
+            mainLayout.setAlignItems(Alignment.BASELINE);
+            mainLayout.add(contentField);
+            mainLayout.add(localeField);
 
         } else {
-            layout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
-            layout.add(localeField);
-            layout.add(contentField);
-
+            mainLayout.setFlexDirection(FlexLayout.FlexDirection.COLUMN);
+            mainLayout.add(localeField);
+            mainLayout.add(contentField);
+            if (fieldProvider != null) {
+                mainLayout.getStyle().set("gap", "var(--lumo-space-xs)");
+            }
             localeField.getStyle().setAlignSelf(Style.AlignSelf.END);
         }
     }
@@ -164,6 +174,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         contentField.addValueChangeListener(e -> {
             if (!isUpdateLocale.getAndSet(false)) {
                 mlstr.addContent(localeField.getValue(), e.getValue());
+                updateValue();
             }
         });
     }

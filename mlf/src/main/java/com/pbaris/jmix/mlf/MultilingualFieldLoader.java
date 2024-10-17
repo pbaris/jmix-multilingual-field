@@ -24,6 +24,7 @@ public class MultilingualFieldLoader extends AbstractComponentLoader<Multilingua
 
     @Override
     public void loadComponent() {
+        componentLoader().loadEnabled(resultComponent, element);
         componentLoader().loadLabel(resultComponent, element);
         componentLoader().loadSizeAttributes(resultComponent, element);
         componentLoader().loadClassNames(resultComponent, element);
@@ -38,7 +39,6 @@ public class MultilingualFieldLoader extends AbstractComponentLoader<Multilingua
         loadFieldType(resultComponent, element);
 
         getDataLoaderSupport().loadData(resultComponent, element);
-        componentLoader().loadEnabled(resultComponent, element);
         componentLoader().loadValueAndElementAttributes(resultComponent, element);
     }
 
