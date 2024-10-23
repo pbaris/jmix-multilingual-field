@@ -51,7 +51,8 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private Supplier<AbstractField<?, String>> fieldProvider;
 
     private List<String> locales;
-    private MultilingualString mlstr;
+    private MultilingualString readMlstr;
+    private MultilingualString writeMlstr;
 
     private Select<String> localeField;
     private AbstractField<?, String> contentField;
@@ -90,6 +91,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         initComponent();
     }
 
+    @SuppressWarnings("unused")
     public void setFieldProvider(final Supplier<AbstractField<?, String>> fieldProvider) {
         this.fieldProvider = fieldProvider;
         initComponent();
@@ -147,7 +149,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         }));
 
         localeField.addValueChangeListener(e -> {
-            String localizedValue = mlstr.getContent(e.getValue());
+            String localizedValue = writeMlstr.getContent(e.getValue());
             isUpdateLocale.set(StringUtils.isNotBlank(localizedValue));
             contentField.setValue(localizedValue);
         });
@@ -179,7 +181,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
 
         contentField.addValueChangeListener(e -> {
             if (!isUpdateLocale.getAndSet(false)) {
-                mlstr.addContent(localeField.getValue(), e.getValue());
+                writeMlstr.addContent(localeField.getValue(), e.getValue());
                 updateValue();
             }
         });
@@ -195,13 +197,14 @@ public class MultilingualField extends CustomField<MultilingualString> implement
 
     @Override
     protected MultilingualString generateModelValue() {
-        return new MultilingualString(mlstr);
+        return readMlstr.equals(writeMlstr) ? readMlstr : writeMlstr;
     }
 
     @Override
     protected void setPresentationValue(final MultilingualString mlstr) {
-        this.mlstr = mlstr;
-        localeField.setValue(locales.get(0));
+        this.readMlstr = mlstr;
+        this.writeMlstr = new MultilingualString(mlstr);
+        localeField.setValue(locales.getFirst());
     }
 
     @Nullable
