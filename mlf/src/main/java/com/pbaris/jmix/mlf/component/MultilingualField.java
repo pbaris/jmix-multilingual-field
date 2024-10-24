@@ -204,7 +204,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     protected void setPresentationValue(final MultilingualString mlstr) {
         this.readMlstr = mlstr;
         this.writeMlstr = new MultilingualString(mlstr);
-        localeField.setValue(locales.getFirst());
+        localeField.setValue(locales.get(0));
     }
 
     @Nullable
