@@ -3,12 +3,12 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'io.jmix.gradle:jmix-gradle-plugin:2.3.4'
+        classpath 'io.jmix.gradle:jmix-gradle-plugin:2.4.1'
     }
 }
 
 group = 'com.pbaris.jmix'
-version = '0.0.70'
+version = '0.0.71'
 
 subprojects {
     apply plugin: 'java-library'
@@ -23,7 +23,7 @@ subprojects {
     }
 
     jmix {
-        bomVersion = '2.3.4'
+        bomVersion = '2.4.1'
         projectId = 'mlf'
     }
 
