@@ -1,10 +1,8 @@
 package com.pbaris.jmix.mlf.data;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -14,33 +12,15 @@ import org.springframework.lang.Nullable;
 /**
  * @author Panos Bariamis (pbaris)
  */
-public class MultilingualString implements Serializable, Comparable<MultilingualString> {
+public record MultilingualString(Map<String, String> contents) implements Serializable, Comparable<MultilingualString> {
     private static final TypeReference<HashMap<String, String>> TYPE_REFERENCE = new TypeReference<>() {};
-
-    private final Map<String, String> contents;
-
-    public MultilingualString() {
-        this((MultilingualString) null);
-    }
-
-    public MultilingualString(final MultilingualString copy) {
-        this.contents = new HashMap<>(copy == null ? Collections.emptyMap() : copy.contents);
-    }
 
     public MultilingualString(final Map<String, String> contents) {
         this.contents = new HashMap<>(contents);
     }
 
-    public String getContent(final String locale) {
-        return getContent(locale, "");
-    }
-
     public String getContent(final String locale, final String defaultValue) {
         return contents.getOrDefault(locale, defaultValue);
-    }
-
-    public void addContent(final String locale, final String content) {
-        contents.put(locale, content);
     }
 
     @Override
@@ -72,25 +52,6 @@ public class MultilingualString implements Serializable, Comparable<Multilingual
         }
 
         return s1.compareTo(s2);
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        MultilingualString that = (MultilingualString) o;
-        return Objects.equals(contents, that.contents);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(contents);
     }
 
     public static String toJson(final MultilingualString mlstr) {

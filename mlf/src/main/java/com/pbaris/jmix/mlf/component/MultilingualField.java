@@ -1,6 +1,9 @@
 package com.pbaris.jmix.mlf.component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
@@ -19,6 +22,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.shared.ValidationUtil;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -51,8 +55,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private Supplier<AbstractField<?, String>> fieldProvider;
 
     private List<String> locales;
-    private MultilingualString readMlstr;
-    private MultilingualString writeMlstr;
+    private final Map<String, String> contents = new HashMap<>();
 
     private Select<String> localeField;
     private AbstractField<?, String> contentField;
@@ -70,6 +73,11 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private String multilineMaxHeight;
 
     private final AtomicBoolean isUpdateLocale = new AtomicBoolean(false);
+
+    public MultilingualField() {
+        setInvalid(false);
+        addValueChangeListener(e -> validate());
+    }
 
     @Override
     public void setApplicationContext(@NonNull final ApplicationContext applicationContext) throws BeansException {
@@ -140,6 +148,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         localeField.setWidth("8em");
         localeField.getStyle().setFlexGrow("0").setFlexShrink("1");
         localeField.setItems(locales);
+        localeField.setValue(locales.get(0));
 
         localeField.setRenderer(new ComponentRenderer<>(locale -> {
             HorizontalLayout wrapper = new HorizontalLayout();
@@ -148,11 +157,12 @@ public class MultilingualField extends CustomField<MultilingualString> implement
             return wrapper;
         }));
 
-        localeField.addValueChangeListener(e -> {
-            String localizedValue = writeMlstr.getContent(e.getValue());
-            isUpdateLocale.set(StringUtils.isNotBlank(localizedValue));
-            contentField.setValue(localizedValue);
-        });
+        localeField.addValueChangeListener(e ->
+            Optional.ofNullable(e.getValue()).ifPresent(locale -> {
+                String localizedValue = contents.getOrDefault(locale, "");
+                isUpdateLocale.set(StringUtils.isNotBlank(localizedValue));
+                contentField.setValue(localizedValue);
+            }));
     }
 
     private void initContentField() {
@@ -181,7 +191,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
 
         contentField.addValueChangeListener(e -> {
             if (!isUpdateLocale.getAndSet(false)) {
-                writeMlstr.addContent(localeField.getValue(), e.getValue());
+                contents.put(localeField.getValue(), e.getValue());
                 updateValue();
             }
         });
@@ -197,13 +207,16 @@ public class MultilingualField extends CustomField<MultilingualString> implement
 
     @Override
     protected MultilingualString generateModelValue() {
-        return readMlstr.equals(writeMlstr) ? readMlstr : writeMlstr;
+        contents.entrySet().removeIf(e -> StringUtils.isBlank(e.getValue()));
+        return new MultilingualString(contents);
     }
 
     @Override
     protected void setPresentationValue(final MultilingualString mlstr) {
-        this.readMlstr = mlstr;
-        this.writeMlstr = new MultilingualString(mlstr);
+        if (mlstr != null) {
+            contents.putAll(mlstr.contents());
+        }
+        localeField.setValue(null); //ttfm: yes null first
         localeField.setValue(locales.get(0));
     }
 
@@ -218,6 +231,12 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         fieldDelegate.setValueSource(valueSource);
     }
 
+    private void validate() {
+        boolean isRequired = isRequiredIndicatorVisible();
+        boolean isInvalid = ValidationUtil.checkRequired(isRequired, getValue(), getEmptyValue()).isError();
+        setInvalid(isInvalid);
+    }
+
     @Override
     public void setReadOnly(final boolean readOnly) {
         super.setReadOnly(readOnly);
@@ -226,7 +245,28 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     }
 
     @Override
-    public void setValue(final MultilingualString value) {
-        super.setValue(value == null ? new MultilingualString() : value);
+    public String getErrorMessage() {
+        return fieldDelegate.getErrorMessage();
+    }
+
+    @Override
+    public void setErrorMessage(final String errorMessage) {
+        fieldDelegate.setErrorMessage(errorMessage);
+    }
+
+    @Override
+    public boolean isInvalid() {
+        return fieldDelegate.isInvalid();
+    }
+
+    @Override
+    public void setInvalid(boolean invalid) {
+        // Method is called from constructor so delegate can be null
+        if (fieldDelegate != null) {
+            fieldDelegate.setInvalid(invalid);
+
+        } else {
+            super.setInvalid(invalid);
+        }
     }
 }
