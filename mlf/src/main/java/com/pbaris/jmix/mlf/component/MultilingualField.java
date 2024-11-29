@@ -22,15 +22,20 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.shared.ValidationUtil;
+import com.vaadin.flow.component.shared.HasValidationProperties;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.Style;
+import com.vaadin.flow.shared.Registration;
 import io.jmix.flowui.UiComponents;
+import io.jmix.flowui.component.HasRequired;
+import io.jmix.flowui.component.SupportsValidation;
 import io.jmix.flowui.component.richtexteditor.RichTextEditor;
+import io.jmix.flowui.component.validation.Validator;
 import io.jmix.flowui.data.SupportsValueSource;
 import io.jmix.flowui.data.ValueSource;
+import io.jmix.flowui.exception.ValidationException;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
@@ -44,8 +49,9 @@ import org.springframework.lang.Nullable;
  * @author Panos Bariamis (pbaris)
  */
 @StyleSheet("com/pbaris/jmix/mlf/mlf.css")
-public class MultilingualField extends CustomField<MultilingualString> implements SupportsValueSource<MultilingualString>,
-    ApplicationContextAware, InitializingBean, HasAriaLabel {
+public class MultilingualField extends CustomField<MultilingualString>
+    implements SupportsValueSource<MultilingualString>, SupportsValidation<MultilingualString>,
+    ApplicationContextAware, InitializingBean, HasAriaLabel, HasRequired {
 
     public enum Type { SINGLE, MULTI, RTF }
 
@@ -55,6 +61,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private Supplier<AbstractField<?, String>> fieldProvider;
 
     private List<String> locales;
+    private String defaultLocale;
     private final Map<String, String> contents = new HashMap<>();
 
     private Select<String> localeField;
@@ -75,7 +82,6 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     private final AtomicBoolean isUpdateLocale = new AtomicBoolean(false);
 
     public MultilingualField() {
-        setInvalid(false);
         addValueChangeListener(e -> validate());
     }
 
@@ -92,6 +98,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
 
     public void setLocaleMode(final LocaleMode localeMode) {
         this.locales = applicationContext.getBean(LocalesProvider.class).getAvailableLocales(localeMode);
+        this.defaultLocale = locales.get(0);
     }
 
     public void setFieldType(final Type fieldType) {
@@ -148,7 +155,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         localeField.setWidth("8em");
         localeField.getStyle().setFlexGrow("0").setFlexShrink("1");
         localeField.setItems(locales);
-        localeField.setValue(locales.get(0));
+        localeField.setValue(defaultLocale);
 
         localeField.setRenderer(new ComponentRenderer<>(locale -> {
             HorizontalLayout wrapper = new HorizontalLayout();
@@ -217,7 +224,7 @@ public class MultilingualField extends CustomField<MultilingualString> implement
             contents.putAll(mlstr.contents());
         }
         localeField.setValue(null); //ttfm: yes null first
-        localeField.setValue(locales.get(0));
+        localeField.setValue(defaultLocale);
     }
 
     @Nullable
@@ -231,10 +238,26 @@ public class MultilingualField extends CustomField<MultilingualString> implement
         fieldDelegate.setValueSource(valueSource);
     }
 
+    @Override
+    public boolean isEmpty() {
+        for (String locale : locales) {
+            if (StringUtils.isBlank(contents.get(locale))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected void updateValue() {
+        super.updateValue();
+        validate();
+    }
+
     private void validate() {
-        boolean isRequired = isRequiredIndicatorVisible();
-        boolean isInvalid = ValidationUtil.checkRequired(isRequired, getValue(), getEmptyValue()).isError();
-        setInvalid(isInvalid);
+        if (isRequiredIndicatorVisible()) {
+            setInvalid(isEmpty());
+        }
     }
 
     @Override
@@ -245,12 +268,47 @@ public class MultilingualField extends CustomField<MultilingualString> implement
     }
 
     @Override
+    public void setRequired(boolean required) {
+        HasRequired.super.setRequired(required);
+        fieldDelegate.updateRequiredState();
+    }
+
+    @Override
+    public void setRequiredIndicatorVisible(boolean required) {
+        super.setRequiredIndicatorVisible(required);
+        fieldDelegate.updateRequiredState();
+    }
+
+    @Nullable
+    @Override
+    public String getRequiredMessage() {
+        return fieldDelegate.getRequiredMessage();
+    }
+
+    @Override
+    public void setRequiredMessage(@Nullable String requiredMessage) {
+        fieldDelegate.setRequiredMessage(requiredMessage);
+    }
+
+    @NonNull
+    @Override
+    public Registration addValidator(@NonNull final Validator<? super MultilingualString> validator) {
+        return fieldDelegate.addValidator(validator);
+    }
+
+    @Override
+    public void executeValidators() throws ValidationException {
+        fieldDelegate.executeValidators();
+    }
+
+    @Nullable
+    @Override
     public String getErrorMessage() {
         return fieldDelegate.getErrorMessage();
     }
 
     @Override
-    public void setErrorMessage(final String errorMessage) {
+    public void setErrorMessage(@Nullable String errorMessage) {
         fieldDelegate.setErrorMessage(errorMessage);
     }
 
@@ -261,12 +319,12 @@ public class MultilingualField extends CustomField<MultilingualString> implement
 
     @Override
     public void setInvalid(boolean invalid) {
-        // Method is called from constructor so delegate can be null
-        if (fieldDelegate != null) {
-            fieldDelegate.setInvalid(invalid);
+        fieldDelegate.setInvalid(invalid);
 
-        } else {
-            super.setInvalid(invalid);
+        if (contentField instanceof HasValidationProperties hvp) {
+            hvp.setInvalid(invalid);
         }
+
+        localeField.setInvalid(invalid);
     }
 }

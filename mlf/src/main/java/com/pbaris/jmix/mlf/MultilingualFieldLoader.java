@@ -39,7 +39,11 @@ public class MultilingualFieldLoader extends AbstractComponentLoader<Multilingua
         loadFieldType(resultComponent, element);
 
         getDataLoaderSupport().loadData(resultComponent, element);
+        componentLoader().loadRequired(resultComponent, element, context);
+        componentLoader().loadValidationAttributes(resultComponent, element, context);
         componentLoader().loadValueAndElementAttributes(resultComponent, element);
+        componentLoader().loadFocusableAttributes(resultComponent, element);
+        componentLoader().loadTooltip(resultComponent, element);
     }
 
     private void loadLocaleMode(final MultilingualField component, final Element element) {

@@ -27,4 +27,13 @@ public class MultilingualFieldDelegate extends AbstractFieldDelegate<Multilingua
     protected AbstractValueBinding<MultilingualString> createValueBinding(@NonNull final ValueSource<MultilingualString> valueSource) {
         return applicationContext.getBean(FieldValueBinding.class, valueSource, component);
     }
+
+    @Override
+    public void setInvalid(final boolean invalid) {
+        super.setInvalid(invalid);
+
+        if (isEmptyAndRequired()) {
+            setComponentRequiredErrorState();
+        }
+    }
 }
