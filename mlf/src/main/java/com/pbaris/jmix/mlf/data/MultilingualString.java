@@ -19,13 +19,12 @@ public record MultilingualString(Map<String, String> contents) implements Serial
         this.contents = new HashMap<>(contents);
     }
 
-    public String getContent(final String locale, final String defaultValue) {
-        return contents.getOrDefault(locale, defaultValue);
+    public String getContent(final String locale) {
+        return getContent(locale, "");
     }
 
-    @Override
-    public String toString() {
-        return toJson(this);
+    public String getContent(final String locale, final String defaultValue) {
+        return contents.getOrDefault(locale, defaultValue);
     }
 
     @Override

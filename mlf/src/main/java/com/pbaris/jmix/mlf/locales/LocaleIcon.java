@@ -57,12 +57,16 @@ public enum LocaleIcon {
     }
 
     public static Image getIcon(final String locale) {
+        Image icon;
         try {
             LocaleIcon.valueOf(locale.toUpperCase());
-            return new Image("icons/%s.png".formatted(locale.toLowerCase()), locale.toLowerCase());
+            icon = new Image("icons/%s.png".formatted(locale.toLowerCase()), locale.toLowerCase());
 
         } catch (IllegalArgumentException e) {
-            return new Image("icons/xx.png", "unknown");
+            icon = new Image("icons/xx.png", "unknown");
         }
+
+        icon.setWidth("24px");
+        return icon;
     }
 }

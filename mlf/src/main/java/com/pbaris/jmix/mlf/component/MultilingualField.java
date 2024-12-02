@@ -20,7 +20,6 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.shared.HasValidationProperties;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -187,14 +186,16 @@ public class MultilingualField extends CustomField<MultilingualString>
 
     private void initLocaleSelect() {
         localeField = new Select<>();
-        localeField.setWidth("12em");
+        localeField.setWidth("10.5em");
         localeField.getStyle().setFlexGrow("0").setFlexShrink("1");
         localeField.setItems(locales);
         localeField.setValue(defaultLocale);
 
         localeField.setRenderer(new ComponentRenderer<>(locale -> {
-            HorizontalLayout wrapper = new HorizontalLayout();
-            wrapper.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+            FlexLayout wrapper = new FlexLayout();
+            wrapper.setAlignItems(Alignment.CENTER);
+            wrapper.setFlexWrap(FlexLayout.FlexWrap.NOWRAP);
+            wrapper.getStyle().set("gap", "var(--lumo-space-xs)");
             wrapper.add(LocaleIcon.getIcon(locale), new Span(LocaleIcon.getTitle(locale)));
             return wrapper;
         }));
