@@ -20,3 +20,8 @@
 .ml-multi-field vaadin-text-area::part(input-field) {
 	border-top-right-radius: 0;
 }
+
+.ml-multi-field vaadin-select,
+.ml-wysiwyg-field vaadin-select {
+	padding-top: var(--lumo-space-xs);
+}

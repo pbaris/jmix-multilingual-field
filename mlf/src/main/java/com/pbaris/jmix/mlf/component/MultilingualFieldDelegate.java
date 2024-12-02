@@ -29,11 +29,8 @@ public class MultilingualFieldDelegate extends AbstractFieldDelegate<Multilingua
     }
 
     @Override
-    public void setInvalid(final boolean invalid) {
-        super.setInvalid(invalid);
-
-        if (isEmptyAndRequired()) {
-            setComponentRequiredErrorState();
-        }
+    public void setInvalidInternal(final boolean invalid) {
+        super.setInvalidInternal(invalid);
+        component.setInternalFieldsInvalid(invalid);
     }
 }

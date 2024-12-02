@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import com.pbaris.jmix.mlf.data.MultilingualString;
+import com.pbaris.jmix.mlf.locales.LocaleIcon;
 import com.pbaris.jmix.mlf.locales.LocaleMode;
 import com.pbaris.jmix.mlf.locales.LocalesProvider;
 import com.vaadin.flow.component.AbstractField;
@@ -17,7 +18,6 @@ import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.SvgIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -64,10 +64,9 @@ public class MultilingualField extends CustomField<MultilingualString>
     private String defaultLocale;
     private final Map<String, String> contents = new HashMap<>();
 
+    private FlexLayout mainLayout;
     private Select<String> localeField;
     private AbstractField<?, String> contentField;
-    private FlexLayout mainLayout;
-
     private Type fieldType = Type.SINGLE;
 
     @Setter
@@ -110,6 +109,7 @@ public class MultilingualField extends CustomField<MultilingualString>
     public void setFieldProvider(final Supplier<AbstractField<?, String>> fieldProvider) {
         this.fieldProvider = fieldProvider;
         initComponent();
+        validate();
     }
 
     private void destroyComponent() {
@@ -118,6 +118,7 @@ public class MultilingualField extends CustomField<MultilingualString>
             removeClassName("ml-field");
             removeClassName("ml-multi-field");
             removeClassName("ml-single-field");
+            removeClassName("ml-wysiwyg-field");
             isUpdateLocale.set(false);
         }
     }
@@ -150,33 +151,13 @@ public class MultilingualField extends CustomField<MultilingualString>
         }
     }
 
-    private void initLocaleSelect() {
-        localeField = new Select<>();
-        localeField.setWidth("8em");
-        localeField.getStyle().setFlexGrow("0").setFlexShrink("1");
-        localeField.setItems(locales);
-        localeField.setValue(defaultLocale);
-
-        localeField.setRenderer(new ComponentRenderer<>(locale -> {
-            HorizontalLayout wrapper = new HorizontalLayout();
-            wrapper.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-            wrapper.add(new SvgIcon("icons/%s.svg".formatted(locale)), new Span(locale));
-            return wrapper;
-        }));
-
-        localeField.addValueChangeListener(e ->
-            Optional.ofNullable(e.getValue()).ifPresent(locale -> {
-                String localizedValue = contents.getOrDefault(locale, "");
-                isUpdateLocale.set(StringUtils.isNotBlank(localizedValue));
-                contentField.setValue(localizedValue);
-            }));
-    }
-
     private void initContentField() {
         if (fieldProvider != null) {
+            addClassName("ml-wysiwyg-field");
             contentField = fieldProvider.get();
 
         } else if (fieldType == Type.RTF) {
+            addClassName("ml-wysiwyg-field");
             contentField = uiComponents.create(RichTextEditor.class);
             initMultilineField(contentField);
 
@@ -202,6 +183,28 @@ public class MultilingualField extends CustomField<MultilingualString>
                 updateValue();
             }
         });
+    }
+
+    private void initLocaleSelect() {
+        localeField = new Select<>();
+        localeField.setWidth("12em");
+        localeField.getStyle().setFlexGrow("0").setFlexShrink("1");
+        localeField.setItems(locales);
+        localeField.setValue(defaultLocale);
+
+        localeField.setRenderer(new ComponentRenderer<>(locale -> {
+            HorizontalLayout wrapper = new HorizontalLayout();
+            wrapper.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+            wrapper.add(LocaleIcon.getIcon(locale), new Span(LocaleIcon.getTitle(locale)));
+            return wrapper;
+        }));
+
+        localeField.addValueChangeListener(e ->
+            Optional.ofNullable(e.getValue()).ifPresent(locale -> {
+                String localizedValue = contents.getOrDefault(locale, "");
+                isUpdateLocale.set(StringUtils.isNotBlank(localizedValue));
+                contentField.setValue(localizedValue);
+            }));
     }
 
     private void initMultilineField(final HasValueAndElement<?, String> field) {
@@ -268,13 +271,13 @@ public class MultilingualField extends CustomField<MultilingualString>
     }
 
     @Override
-    public void setRequired(boolean required) {
+    public void setRequired(final boolean required) {
         HasRequired.super.setRequired(required);
         fieldDelegate.updateRequiredState();
     }
 
     @Override
-    public void setRequiredIndicatorVisible(boolean required) {
+    public void setRequiredIndicatorVisible(final boolean required) {
         super.setRequiredIndicatorVisible(required);
         fieldDelegate.updateRequiredState();
     }
@@ -286,7 +289,7 @@ public class MultilingualField extends CustomField<MultilingualString>
     }
 
     @Override
-    public void setRequiredMessage(@Nullable String requiredMessage) {
+    public void setRequiredMessage(@Nullable final String requiredMessage) {
         fieldDelegate.setRequiredMessage(requiredMessage);
     }
 
@@ -308,7 +311,7 @@ public class MultilingualField extends CustomField<MultilingualString>
     }
 
     @Override
-    public void setErrorMessage(@Nullable String errorMessage) {
+    public void setErrorMessage(@Nullable final String errorMessage) {
         fieldDelegate.setErrorMessage(errorMessage);
     }
 
@@ -318,9 +321,11 @@ public class MultilingualField extends CustomField<MultilingualString>
     }
 
     @Override
-    public void setInvalid(boolean invalid) {
+    public void setInvalid(final boolean invalid) {
         fieldDelegate.setInvalid(invalid);
+    }
 
+    void setInternalFieldsInvalid(final boolean invalid) {
         if (contentField instanceof HasValidationProperties hvp) {
             hvp.setInvalid(invalid);
         }
