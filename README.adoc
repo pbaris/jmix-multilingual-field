@@ -116,7 +116,7 @@ The `jmix.mlf.user-locales` application property allows you to define locales as
 +
 [,properties]
 ----
-jmix.mlf.user-locales=en,es,el,bg,lt,no,pt,vi,my
+jmix.mlf.user-locales=en,el,ru,es,fr,my
 ----
 +
 Alternatively to dynamically specify locales at runtime, you can implement the `gr.netmechanics.jmix.mlf.locales.UserLocales` interface and provide its implementation through the application property `jmix.mlf.user-locales-app-setting-class`. For instance, this can be achieved using an AppSetting.
