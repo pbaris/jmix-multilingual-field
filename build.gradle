@@ -7,8 +7,7 @@ buildscript {
     }
 }
 
-group = 'com.pbaris.jmix'
-version = '0.0.129'
+group = 'gr.netmechanics.jmix'
 
 subprojects {
     apply plugin: 'java-library'
@@ -18,7 +17,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven {
-            url 'https://global.repo.jmix.io/repository/public'
+            url = 'https://nexus.jmix.io/repository/public'
         }
     }
 
@@ -51,6 +50,15 @@ subprojects {
                 credentials {
                     username = "${nexus_username}"
                     password = "${nexus_password}"
+                }
+            }
+
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY"))
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                    password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
                 }
             }
         }
