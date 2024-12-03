@@ -42,7 +42,12 @@ As a result, Studio generates the following attribute definition:
 private MultilingualString title;
 ----
 
-NOTE: The actual value stored in the database is a JSON string. {"en":"Computer","el":"Ηλεκτρονικός υπολογιστής"}
+[NOTE]
+====
+The actual value stored in the database is a JSON string.
+
+{"en":"Computer","el":"Ηλεκτρονικός υπολογιστής"}
+====
 
 === Field
 
@@ -69,7 +74,7 @@ or through code
 
 === DataGrid Column Renderer
 
-In a list view you can add the renderer from studio `Jmix UI context menu`. The default locale will be used to render the column.
+In a list view you can add the renderer from studio `Jmix UI context menu`
 
 image::./docs/studio3.png[]
 
@@ -95,6 +100,8 @@ or through code
     </layout>
 </view>
 ----
+
+TIP: The default locale will be used to render the column.
 
 == Configuration
 
