@@ -2,7 +2,7 @@ image::https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?styl
 
 = MultilingualField for Jmix
 
-This add-on provides a custom datatype, a related field and a dataGrid column renderer.
+This add-on provides a custom datatype, a related field and a dataGrid column renderer, for storing, editing and displaying multilingual string values.
 
 image::./docs/preview1.png[]
 image::./docs/preview2.png[]
@@ -30,7 +30,7 @@ implementation 'gr.netmechanics.jmix:mlf-starter:<addon-version>'
 
 Add-on provides a new datatype `MultilingualString`.
 
-You can define an entity attribute with the `MultilingualString` datatype using Studio. For example:
+You can define an entity attribute with the `MultilingualString` datatype using Studio.
 
 image::./docs/studio1.png[]
 
@@ -42,7 +42,7 @@ As a result, Studio generates the following attribute definition:
 private MultilingualString title;
 ----
 
-NOTE: The actual value stored in the database is a JSON string. For example: {"en":"Computer","el":"Ηλεκτρονικός υπολογιστής"}
+NOTE: The actual value stored in the database is a JSON string. {"en":"Computer","el":"Ηλεκτρονικός υπολογιστής"}
 
 === Field
 
@@ -207,7 +207,7 @@ TIP: For the field to be valid, values must be provided for all locales.
 
 The supported locales for the field are listed below. If an unsupported locale is used, the unknown flag will be displayed.
 
-[%autowidth,cols="a,a,a,a,a,a"]
+[%autowidth,cols="a,a,a,a,a"]
 |===
 |image:./mlf/src/main/resources/META-INF/resources/icons/sq.png[width=24] Albanian (sq)
 |image:./mlf/src/main/resources/META-INF/resources/icons/hy.png[width=24] Armenian (hy)
@@ -242,7 +242,6 @@ The supported locales for the field are listed below. If an unsupported locale i
 |image:./mlf/src/main/resources/META-INF/resources/icons/th.png[width=24] Thai (th)
 |image:./mlf/src/main/resources/META-INF/resources/icons/tr.png[width=24] Turkish (tr)
 |image:./mlf/src/main/resources/META-INF/resources/icons/vi.png[width=24] Vietnamese (vi)
-|
 |
 |image:./mlf/src/main/resources/META-INF/resources/icons/xx.png[width=24] Unknown
 |===
