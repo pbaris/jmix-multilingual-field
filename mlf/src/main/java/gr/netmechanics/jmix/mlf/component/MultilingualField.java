@@ -26,6 +26,7 @@ import com.vaadin.flow.shared.Registration;
 import gr.netmechanics.jmix.mlf.data.MultilingualString;
 import gr.netmechanics.jmix.mlf.locales.LocaleIcon;
 import gr.netmechanics.jmix.mlf.locales.LocalesProvider;
+import gr.netmechanics.jmix.mlf.locales.UserLocalesProperties;
 import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.component.HasRequired;
 import io.jmix.flowui.component.SupportsValidation;
@@ -60,6 +61,7 @@ public class MultilingualField extends CustomField<MultilingualString>
 
     private List<String> locales;
     private String defaultLocale;
+    private boolean validateDefaultLocaleOnly;
     private final Map<String, String> contents = new HashMap<>();
 
     private FlexLayout mainLayout;
@@ -92,6 +94,7 @@ public class MultilingualField extends CustomField<MultilingualString>
         this.fieldDelegate = applicationContext.getBean(MultilingualFieldDelegate.class, this);
         this.uiComponents = applicationContext.getBean(UiComponents.class);
         this.locales = applicationContext.getBean(LocalesProvider.class).getAvailableLocales();
+        this.validateDefaultLocaleOnly = applicationContext.getBean(UserLocalesProperties.class).isValidateDefaultLocaleOnly();
         this.defaultLocale = locales.get(0);
     }
 
@@ -240,6 +243,10 @@ public class MultilingualField extends CustomField<MultilingualString>
 
     @Override
     public boolean isEmpty() {
+        if (validateDefaultLocaleOnly) {
+            return StringUtils.isBlank(contents.get(defaultLocale));
+        }
+
         for (String locale : locales) {
             if (StringUtils.isBlank(contents.get(locale))) {
                 return true;

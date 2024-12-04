@@ -135,7 +135,8 @@ public class SystemSettings extends AppSettingsEntity implements UserLocales {
     @AppSettingsDefault("en") 
     @Column(name = "LOCALES") 
     private String locales;
-    
+
+    @Override
     public String getLocales() {
         return locales;
     }
@@ -208,7 +209,12 @@ If the field is bound to a required entity attribute, then the edit fields also 
 
 image::./docs/field1_required.png[]
 
-TIP: For the field to be valid, values must be provided for all locales.
+For the field to be valid, values must be provided for all locales. To validate only the default locale set the `jmix.mlf.validate-default-locale-only` application property to true.
+
+[,properties]
+----
+jmix.mlf.validate-default-locale-only=true
+----
 
 ==== UI Flags
 
