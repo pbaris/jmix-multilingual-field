@@ -1,4 +1,4 @@
-archivesBaseName = 'mlf'
+archivesBaseName = 'jmix-multilingual-field'
 
 dependencies {
     implementation 'io.jmix.core:jmix-core-starter'

@@ -1,4 +1,4 @@
-archivesBaseName = 'mlf-starter'
+archivesBaseName = 'jmix-multilingual-field-starter'
 
 jmix {
     entitiesEnhancing {
