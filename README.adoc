@@ -14,14 +14,14 @@ The following table shows which version of the add-on is compatible with which v
 [options="autowidth,header"]
 |===
 |Jmix Version|Add-on Version|Implementation
-|2.4.1|1.0.0|gr.netmechanics.jmix:mlf-starter:1.0.0
+|2.4.1|1.0.0|gr.netmechanics.jmix:jmix-multilingual-field-starter:1.0.0
 |===
 
 For manual installation, add the following dependencies to your `build.gradle`:
 
 [,gradle]
 ----
-implementation 'gr.netmechanics.jmix:mlf-starter:<addon-version>'
+implementation 'gr.netmechanics.jmix:jmix-multilingual-field-starter:<addon-version>'
 ----
 
 == How to use the add-on
