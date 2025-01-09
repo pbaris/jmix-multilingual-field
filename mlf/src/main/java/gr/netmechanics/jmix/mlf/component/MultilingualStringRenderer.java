@@ -18,6 +18,6 @@ public class MultilingualStringRenderer<S> extends BasicRenderer<S, Multilingual
 
     @Override
     protected String getFormattedValue(final MultilingualString object) {
-        return object.getContent(defaultLocale, "Undefined for [%s]".formatted(defaultLocale));
+        return object == null ? "" : object.getContent(defaultLocale, "Undefined for [%s]".formatted(defaultLocale));
     }
 }
