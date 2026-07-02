@@ -64,6 +64,9 @@ public record MultilingualString(Map<String, String> contents) implements Serial
     }
 
     public static MultilingualString fromJson(final String json) {
+        if (json == null) {
+            return new MultilingualString(new HashMap<>());
+        }
         try {
             Map<String, String> values = new JsonMapper().readValue(json, TYPE_REFERENCE);
             return new MultilingualString(values);
