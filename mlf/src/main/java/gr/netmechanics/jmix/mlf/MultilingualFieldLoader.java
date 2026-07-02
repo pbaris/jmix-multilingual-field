@@ -4,7 +4,6 @@ import gr.netmechanics.jmix.mlf.component.MultilingualField;
 import io.jmix.flowui.xml.layout.loader.AbstractComponentLoader;
 import io.jmix.flowui.xml.layout.support.DataLoaderSupport;
 import org.dom4j.Element;
-import org.springframework.lang.NonNull;
 
 /**
  * @author Panos Bariamis (pbaris)
@@ -14,7 +13,6 @@ public class MultilingualFieldLoader extends AbstractComponentLoader<Multilingua
     private DataLoaderSupport dataLoaderSupport;
 
     @Override
-    @NonNull
     protected MultilingualField createComponent() {
         return factory.create(MultilingualField.class);
     }

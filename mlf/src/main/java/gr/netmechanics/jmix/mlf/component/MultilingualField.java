@@ -12,7 +12,6 @@ import com.vaadin.flow.component.HasAriaLabel;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.customfield.CustomField;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
@@ -37,17 +36,15 @@ import io.jmix.flowui.data.ValueSource;
 import io.jmix.flowui.exception.ValidationException;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 /**
  * @author Panos Bariamis (pbaris)
  */
-@StyleSheet("gr/netmechanics/jmix/mlf/mlf.css")
 public class MultilingualField extends CustomField<MultilingualString>
     implements SupportsValueSource<MultilingualString>, SupportsValidation<MultilingualString>,
     ApplicationContextAware, InitializingBean, HasAriaLabel, HasRequired {
@@ -90,12 +87,12 @@ public class MultilingualField extends CustomField<MultilingualString>
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         this.fieldDelegate = applicationContext.getBean(MultilingualFieldDelegate.class, this);
         this.uiComponents = applicationContext.getBean(UiComponents.class);
         this.locales = applicationContext.getBean(LocalesProvider.class).getAvailableLocales();
         this.validateDefaultLocaleOnly = applicationContext.getBean(UserLocalesProperties.class).isValidateDefaultLocaleOnly();
-        this.defaultLocale = locales.get(0);
+        this.defaultLocale = locales.getFirst();
     }
 
     public void setFieldType(final Type fieldType) {
@@ -143,7 +140,7 @@ public class MultilingualField extends CustomField<MultilingualString>
             mainLayout.add(localeField);
             mainLayout.add(contentField);
             if (fieldProvider != null) {
-                mainLayout.getStyle().set("gap", "var(--lumo-space-xs)");
+                mainLayout.getStyle().set("gap", "var(--vaadin-gap-xs)");
             }
             localeField.getStyle().setAlignSelf(Style.AlignSelf.END);
         }
@@ -194,7 +191,7 @@ public class MultilingualField extends CustomField<MultilingualString>
             FlexLayout wrapper = new FlexLayout();
             wrapper.setAlignItems(Alignment.CENTER);
             wrapper.setFlexWrap(FlexLayout.FlexWrap.NOWRAP);
-            wrapper.getStyle().set("gap", "var(--lumo-space-xs)");
+            wrapper.getStyle().set("gap", "var(--vaadin-gap-xs)");
             wrapper.add(LocaleIcon.getIcon(locale), new Span(LocaleIcon.getTitle(locale)));
             return wrapper;
         }));
@@ -230,14 +227,13 @@ public class MultilingualField extends CustomField<MultilingualString>
         localeField.setValue(defaultLocale);
     }
 
-    @Nullable
     @Override
     public ValueSource<MultilingualString> getValueSource() {
         return fieldDelegate.getValueSource();
     }
 
     @Override
-    public void setValueSource(@Nullable final ValueSource<MultilingualString> valueSource) {
+    public void setValueSource(final ValueSource<MultilingualString> valueSource) {
         fieldDelegate.setValueSource(valueSource);
     }
 
@@ -286,14 +282,13 @@ public class MultilingualField extends CustomField<MultilingualString>
         fieldDelegate.updateRequiredState();
     }
 
-    @Nullable
     @Override
     public String getRequiredMessage() {
         return fieldDelegate.getRequiredMessage();
     }
 
     @Override
-    public void setRequiredMessage(@Nullable final String requiredMessage) {
+    public void setRequiredMessage(final String requiredMessage) {
         fieldDelegate.setRequiredMessage(requiredMessage);
     }
 
@@ -308,14 +303,13 @@ public class MultilingualField extends CustomField<MultilingualString>
         fieldDelegate.executeValidators();
     }
 
-    @Nullable
     @Override
     public String getErrorMessage() {
         return fieldDelegate.getErrorMessage();
     }
 
     @Override
-    public void setErrorMessage(@Nullable final String errorMessage) {
+    public void setErrorMessage(final String errorMessage) {
         fieldDelegate.setErrorMessage(errorMessage);
     }
 

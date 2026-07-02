@@ -1,6 +1,7 @@
 package gr.netmechanics.jmix.mlf.locales;
 
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.server.streams.DownloadHandler;
 
 /**
  * @author Panos Bariamis (pbaris)
@@ -57,16 +58,21 @@ public enum LocaleIcon {
     }
 
     public static Image getIcon(final String locale) {
-        Image icon;
-        try {
-            LocaleIcon.valueOf(locale.toUpperCase());
-            icon = new Image("icons/%s.png".formatted(locale.toLowerCase()), locale.toLowerCase());
+        String code = locale != null ? locale.toLowerCase() : "xx";
+        String path = "/META-INF/resources/icons/%s.png".formatted(code);
 
-        } catch (IllegalArgumentException e) {
-            icon = new Image("icons/xx.png", "unknown");
+        DownloadHandler src;
+        try {
+            LocaleIcon.valueOf(code.toUpperCase());
+            src = DownloadHandler.forClassResource(LocaleIcon.class, path);
+
+        } catch (Exception e) {
+            src = DownloadHandler.forClassResource(LocaleIcon.class, "/META-INF/resources/icons/xx.png");
+            code = "unknown";
         }
 
-        icon.setWidth("24px");
+        Image icon = new Image(src, code);
+        icon.setWidth("20px");
         return icon;
     }
 }
