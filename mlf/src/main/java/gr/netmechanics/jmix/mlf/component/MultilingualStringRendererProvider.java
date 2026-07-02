@@ -7,11 +7,13 @@ import io.jmix.flowui.xml.layout.ComponentLoader;
 import io.jmix.flowui.xml.layout.loader.component.datagrid.RendererProvider;
 import lombok.RequiredArgsConstructor;
 import org.dom4j.Element;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.stereotype.Component;
 
 /**
  * @author Panos Bariamis (pbaris)
  */
+@NullMarked
 @RequiredArgsConstructor
 @Component("mlf_MultilingualStringRendererProvider")
 public class MultilingualStringRendererProvider implements RendererProvider<MultilingualStringRenderer<?>> {

@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.netmechanics.jmix.mlf.locales.LocalesUtil;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * @author Panos Bariamis (pbaris)
@@ -56,19 +56,19 @@ public record MultilingualString(Map<String, String> contents) implements Serial
 
     public static String toJson(final MultilingualString mlstr) {
         try {
-            return new ObjectMapper().writeValueAsString(mlstr.contents);
+            return new JsonMapper().writeValueAsString(mlstr.contents);
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException("Cannot convert to Json", e);
         }
     }
 
     public static MultilingualString fromJson(final String json) {
         try {
-            Map<String, String> values = new ObjectMapper().readValue(json, TYPE_REFERENCE);
+            Map<String, String> values = new JsonMapper().readValue(json, TYPE_REFERENCE);
             return new MultilingualString(values);
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException("Cannot convert from Json", e);
         }
     }

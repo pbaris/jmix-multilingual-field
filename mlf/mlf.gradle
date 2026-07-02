@@ -1,4 +1,6 @@
-archivesBaseName = 'jmix-multilingual-field'
+base {
+    archivesName = 'jmix-multilingual-field'
+}
 
 dependencies {
     implementation 'io.jmix.core:jmix-core-starter'

@@ -1,4 +1,6 @@
-archivesBaseName = 'jmix-multilingual-field-starter'
+base {
+    archivesName = 'jmix-multilingual-field-starter'
+}
 
 jmix {
     entitiesEnhancing {
